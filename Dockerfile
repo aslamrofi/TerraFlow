@@ -1,15 +1,13 @@
 # ---- Build stage ----
-FROM maven:3.9-eclipse-temurin-17 AS build
+FROM gradle:8-jdk17 AS build
 WORKDIR /app
-COPY pom.xml .
-RUN mvn -q dependency:go-offline
-COPY src ./src
-RUN mvn -q clean package -DskipTests
+COPY . .
+RUN gradle clean bootJar -x test --no-daemon
 
 # ---- Run stage ----
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/build/libs/*.jar app.jar
 
 # Keep the JVM inside Render's 512 MB free tier
 ENV JAVA_OPTS="-Xmx400m -Xss256k -XX:+UseContainerSupport"
