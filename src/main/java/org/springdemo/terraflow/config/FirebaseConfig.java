@@ -18,9 +18,9 @@ public class FirebaseConfig {
     @Value("${firebase.database-url}")
     private String databaseUrl;
 
-    // Spring resolves a String property into a Resource automatically,
-    // including the classpath: prefix set in application.properties.
-    @Value("${firebase.credentials-path}")
+    // Locally: falls back to the key in src/main/resources.
+    // On Render: FIREBASE_CREDENTIALS_PATH=file:/etc/secrets/firebase-service-account.json
+    @Value("${firebase.credentials-path:classpath:firebase-service-account.json}")
     private Resource credentialsResource;
 
     @Bean
