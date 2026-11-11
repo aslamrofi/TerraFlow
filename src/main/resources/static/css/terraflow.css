@@ -1,0 +1,80 @@
+/* TerraFlow - field-notebook look: deep field green, straw accent, soil neutrals */
+:root{
+  --tf-ink:#1c2a20; --tf-field:#2e5e3e; --tf-leaf:#5e8c3a; --tf-sprout:#a8c66c;
+  --tf-straw:#d9b44a; --tf-soil:#5b4636; --tf-bg:#f1f4ea; --tf-surface:#fff;
+  --tf-line:#dce2d0; --tf-muted:#667267; --tf-side:#18291e; --tf-side-w:15.5rem;
+  --bs-body-font-family:'Public Sans',system-ui,sans-serif;
+  --bs-body-color:var(--tf-ink); --bs-body-bg:var(--tf-bg);
+  --bs-link-color:var(--tf-field); --bs-link-hover-color:var(--tf-ink);
+  --bs-border-color:var(--tf-line);
+}
+h1,h2,h3,h4,.tf-brand{font-family:'Bricolage Grotesque','Public Sans',sans-serif;letter-spacing:-.01em}
+.btn-tf{background:var(--tf-field);color:#fff;border:0}
+.btn-tf:hover,.btn-tf:focus{background:var(--tf-ink);color:#fff}
+.btn-outline-tf{border:1px solid var(--tf-field);color:var(--tf-field);background:transparent}
+.btn-outline-tf:hover{background:var(--tf-field);color:#fff}
+:focus-visible{outline:3px solid var(--tf-straw);outline-offset:2px}
+.form-control:focus,.form-select:focus{border-color:var(--tf-leaf);box-shadow:0 0 0 .2rem rgba(94,140,58,.25)}
+
+/* shell */
+.tf-sidebar{background:var(--tf-side);color:#cfd9c9;width:var(--tf-side-w);--bs-offcanvas-width:var(--tf-side-w)}
+@media(min-width:992px){
+  .tf-sidebar{position:fixed;inset:0 auto 0 0;z-index:1030}
+  .tf-main{margin-left:var(--tf-side-w)}
+}
+.tf-brand{font-size:1.35rem;font-weight:700;color:#fff;text-decoration:none;display:flex;gap:.5rem;align-items:center;padding:1.25rem 1.25rem 1rem}
+.tf-brand i{color:var(--tf-straw)}
+.tf-nav{list-style:none;margin:0;padding:.5rem .75rem}
+.tf-nav a{display:flex;gap:.75rem;align-items:center;padding:.6rem .75rem;border-radius:.5rem;color:#cfd9c9;text-decoration:none;border-left:3px solid transparent}
+.tf-nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.tf-nav a.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--tf-straw);font-weight:600}
+.tf-side-foot{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.1);font-size:.9rem}
+.tf-side-foot .btn{--bs-btn-color:#cfd9c9;--bs-btn-border-color:rgba(255,255,255,.25);--bs-btn-hover-bg:rgba(255,255,255,.1);--bs-btn-hover-color:#fff}
+.tf-topbar{display:flex;align-items:center;gap:.75rem;padding:1rem 1.5rem;background:var(--tf-surface);border-bottom:1px solid var(--tf-line)}
+.tf-topbar h1{font-size:1.25rem;margin:0;font-weight:700}
+.tf-content{padding:1.5rem;max-width:72rem}
+.tf-footer{padding:1rem 1.5rem;color:var(--tf-muted);font-size:.85rem}
+
+/* surfaces */
+.tf-panel{background:var(--tf-surface);border:1px solid var(--tf-line);border-radius:.75rem}
+.tf-panel-head{padding:1rem 1.25rem;border-bottom:1px solid var(--tf-line);display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.tf-panel-head h2{font-size:1.05rem;margin:0;font-weight:700}
+.tf-panel-body{padding:1.25rem}
+.tf-table{margin:0}
+.tf-table th{font-weight:600;color:var(--tf-muted);font-size:.85rem;border-bottom-color:var(--tf-line);background:#f8faf3}
+.tf-table td,.tf-table th{padding:.8rem 1.25rem;vertical-align:middle}
+.tf-empty{padding:3rem 1.5rem;text-align:center;color:var(--tf-muted)}
+.tf-empty i{font-size:2rem;color:var(--tf-leaf)}
+
+/* stats */
+.tf-stat{padding:1.1rem 1.25rem;border-left:4px solid var(--tf-leaf)}
+.tf-stat.straw{border-left-color:var(--tf-straw)} .tf-stat.soil{border-left-color:var(--tf-soil)}
+.tf-stat .n{font-family:'Bricolage Grotesque',sans-serif;font-size:2rem;font-weight:700;line-height:1}
+.tf-stat .l{color:var(--tf-muted);font-size:.9rem}
+
+/* growth stage chips */
+.tf-stage{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .65rem;border-radius:2rem;font-size:.8rem;font-weight:600;background:#e8ecdf;color:var(--tf-soil)}
+.tf-stage::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+.stage-seedling{background:#eaf3d4;color:#4f7a1f}.stage-vegetative{background:#d5ebd9;color:#1f6a37}
+.stage-flowering{background:#fbe9ee;color:#a23a58}.stage-fruiting{background:#fdeccb;color:#8a5a00}
+.stage-harvest-ready{background:#f6e3b0;color:#6a4a00}
+.st-pending{background:#fdeccb;color:#8a5a00}.st-done{background:#d5ebd9;color:#1f6a37}.st-overdue{background:#f8d9d4;color:#9b2c1d}
+
+/* details */
+.tf-dl{display:grid;grid-template-columns:10rem 1fr;gap:.75rem 1rem;margin:0}
+.tf-dl dt{color:var(--tf-muted);font-weight:500}.tf-dl dd{margin:0}
+@media(max-width:575px){.tf-dl{grid-template-columns:1fr;gap:.1rem}.tf-dl dd{margin-bottom:.75rem}}
+
+/* auth */
+.tf-auth{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+.tf-auth-art{background:var(--tf-field);color:#fff;position:relative;overflow:hidden;padding:3rem;display:flex;flex-direction:column;justify-content:flex-end}
+.tf-auth-art svg{position:absolute;inset:0;width:100%;height:100%}
+.tf-auth-art h2{font-size:2.4rem;font-weight:700;position:relative;max-width:18ch}
+.tf-auth-art p{position:relative;max-width:36ch;color:#d3e2cc}
+.tf-auth-form{display:flex;align-items:center;justify-content:center;padding:2rem}
+.tf-auth-card{width:100%;max-width:25rem}
+@media(max-width:860px){.tf-auth{grid-template-columns:1fr}.tf-auth-art{display:none}}
+
+/* weather */
+.tf-temp{font-family:'Bricolage Grotesque',sans-serif;font-size:3.5rem;font-weight:700;line-height:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

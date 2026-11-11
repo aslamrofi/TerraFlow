@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Crop form')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('crops')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar(${cropDTO.id == null} ? 'Register crop' : 'Edit crop')}"></div>
+    <div class="tf-content">
+        <div class="tf-panel" style="max-width:42rem">
+            <div class="tf-panel-body">
+                <form th:action="${cropDTO.id == null} ? @{/crops} : @{/crops/{id}(id=${cropDTO.id})}" th:object="${cropDTO}" method="post" novalidate>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="name" class="form-label">Crop</label>
+                            <select id="name" th:field="*{name}" class="form-select" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" onchange="tfFilterVarieties()">
+                                <option value="">Choose a crop</option>
+                                <option value="Maize">Maize</option>
+                                <option value="Beans">Beans</option>
+                                <option value="Tomato">Tomato</option>
+                                <option value="Rice">Rice</option>
+                                <option value="Cabbage">Cabbage</option>
+                                <option value="Onion">Onion</option>
+                                <option value="Potato">Potato</option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{name}"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="variety" class="form-label">Variety</label>
+                            <select id="variety" th:field="*{variety}" class="form-select" th:classappend="${#fields.hasErrors('variety')} ? 'is-invalid'">
+                                <option value="">Choose a crop first</option>
+                                <option data-crop="Maize" value="Hybrid 614">Hybrid 614</option>
+                                <option data-crop="Maize" value="DK8031">DK8031</option>
+                                <option data-crop="Maize" value="Pioneer 3253">Pioneer 3253</option>
+                                <option data-crop="Maize" value="SC Duma 43">SC Duma 43</option>
+                                <option data-crop="Maize" value="Pannar 53">Pannar 53</option>
+                                <option data-crop="Maize" value="WH505">WH505</option>
+                                <option data-crop="Maize" value="H6213">H6213</option>
+                                <option data-crop="Beans" value="Rosecoco">Rosecoco</option>
+                                <option data-crop="Beans" value="Mwitemania">Mwitemania</option>
+                                <option data-crop="Beans" value="Wairimu">Wairimu</option>
+                                <option data-crop="Beans" value="Canadian Wonder">Canadian Wonder</option>
+                                <option data-crop="Beans" value="KAT B1">KAT B1</option>
+                                <option data-crop="Beans" value="GLP2">GLP2</option>
+                                <option data-crop="Beans" value="Mwezi Moja">Mwezi Moja</option>
+                                <option data-crop="Tomato" value="Rio Grande">Rio Grande</option>
+                                <option data-crop="Tomato" value="Money Maker">Money Maker</option>
+                                <option data-crop="Tomato" value="Anna F1">Anna F1</option>
+                                <option data-crop="Tomato" value="Roma VF">Roma VF</option>
+                                <option data-crop="Tomato" value="Cal J">Cal J</option>
+                                <option data-crop="Tomato" value="Kilele F1">Kilele F1</option>
+                                <option data-crop="Tomato" value="Eden F1">Eden F1</option>
+                                <option data-crop="Rice" value="Basmati 370">Basmati 370</option>
+                                <option data-crop="Rice" value="IR2793">IR2793</option>
+                                <option data-crop="Rice" value="NERICA 4">NERICA 4</option>
+                                <option data-crop="Rice" value="Komboka">Komboka</option>
+                                <option data-crop="Rice" value="BW196">BW196</option>
+                                <option data-crop="Rice" value="ITA 310">ITA 310</option>
+                                <option data-crop="Rice" value="Sindano">Sindano</option>
+                                <option data-crop="Cabbage" value="Gloria F1">Gloria F1</option>
+                                <option data-crop="Cabbage" value="Copenhagen Market">Copenhagen Market</option>
+                                <option data-crop="Cabbage" value="Drumhead">Drumhead</option>
+                                <option data-crop="Cabbage" value="Sugarloaf">Sugarloaf</option>
+                                <option data-crop="Cabbage" value="KY Cross">KY Cross</option>
+                                <option data-crop="Cabbage" value="Prize Choice">Prize Choice</option>
+                                <option data-crop="Cabbage" value="Tropicana F1">Tropicana F1</option>
+                                <option data-crop="Onion" value="Red Creole">Red Creole</option>
+                                <option data-crop="Onion" value="Bombay Red">Bombay Red</option>
+                                <option data-crop="Onion" value="Texas Grano">Texas Grano</option>
+                                <option data-crop="Onion" value="Red Pinoy F1">Red Pinoy F1</option>
+                                <option data-crop="Onion" value="Jambar F1">Jambar F1</option>
+                                <option data-crop="Onion" value="Jamora">Jamora</option>
+                                <option data-crop="Onion" value="Jamdor">Jamdor</option>
+                                <option data-crop="Potato" value="Shangi">Shangi</option>
+                                <option data-crop="Potato" value="Dutch Robijn">Dutch Robijn</option>
+                                <option data-crop="Potato" value="Kenya Mpya">Kenya Mpya</option>
+                                <option data-crop="Potato" value="Tigoni">Tigoni</option>
+                                <option data-crop="Potato" value="Asante">Asante</option>
+                                <option data-crop="Potato" value="Markies">Markies</option>
+                                <option data-crop="Potato" value="Unica">Unica</option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{variety}"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="plantingDate" class="form-label">Planting date</label>
+                            <input type="date" id="plantingDate" th:field="*{plantingDate}" class="form-control" th:classappend="${#fields.hasErrors('plantingDate')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{plantingDate}"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="growthStage" class="form-label">Growth stage</label>
+                            <select id="growthStage" th:field="*{growthStage}" class="form-select" th:classappend="${#fields.hasErrors('growthStage')} ? 'is-invalid'">
+                                <option value="">Choose a stage</option>
+                                <option th:each="s : ${ {'Seedling','Vegetative','Flowering','Fruiting','Harvest ready'} }" th:value="${s}" th:text="${s}">Seedling</option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{growthStage}"></div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-tf" th:text="${cropDTO.id == null} ? 'Register crop' : 'Save changes'">Save</button>
+                        <a th:href="@{/crops}" class="btn btn-outline-tf">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+<script>
+    // Shows only the varieties that belong to the chosen crop. All 49 options
+    // live in the DOM; this just hides/disables the ones that don't match so
+    // Thymeleaf's own selection (th:field) still works for the edit form.
+    function tfFilterVarieties() {
+        var crop = document.getElementById('name').value;
+        var variety = document.getElementById('variety');
+        var options = variety.querySelectorAll('option[data-crop]');
+        options.forEach(function (opt) {
+            var matches = opt.getAttribute('data-crop') === crop;
+            opt.hidden = !matches;
+            opt.disabled = !matches;
+        });
+        var placeholder = variety.querySelector('option[value=""]');
+        if (placeholder) {
+            placeholder.textContent = crop ? 'Choose a variety' : 'Choose a crop first';
+        }
+        if (variety.selectedOptions.length && variety.selectedOptions[0].disabled) {
+            variety.value = '';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', tfFilterVarieties);
+</script>
+</body>
+</html>

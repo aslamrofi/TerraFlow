@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Settings')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('settings')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar('Settings')}"></div>
+    <div class="tf-content">
+        <!-- ASSUMED: model attribute "preference" (UserPreference: language, temperatureUnit, emailNotifications). POST to /settings -->
+        <div th:if="${param.saved != null}" class="alert alert-success" role="status">Settings saved.</div>
+        <div class="tf-panel" style="max-width:36rem">
+            <div class="tf-panel-head"><h2>Preferences</h2></div>
+            <div class="tf-panel-body">
+                <form th:action="@{/settings}" th:object="${preference}" method="post">
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Language</label>
+                        <select id="language" th:field="*{language}" class="form-select">
+                            <option value="en">English</option>
+                            <option value="sw">Kiswahili</option>
+                            <option value="fr">Fran&ccedil;ais</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="temperatureUnit" class="form-label">Temperature unit</label>
+                        <select id="temperatureUnit" th:field="*{temperatureUnit}" class="form-select">
+                            <option value="C">Celsius</option>
+                            <option value="F">Fahrenheit</option>
+                        </select>
+                    </div>
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" role="switch" id="emailNotifications" th:field="*{emailNotifications}">
+                        <label class="form-check-label" for="emailNotifications">Email me about due tasks</label>
+                    </div>
+                    <button type="submit" class="btn btn-tf">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Task')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('tasks')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar(${taskDTO.id == null} ? 'Add task' : 'Edit task')}"></div>
+    <div class="tf-content">
+        <!-- ASSUMED: model attribute "taskDTO" (FarmTaskDTO: id, title, description, dueDate, status) -->
+        <div class="tf-panel" style="max-width:42rem"><div class="tf-panel-body">
+            <form th:action="${taskDTO.id == null} ? @{/tasks} : @{/tasks/{id}(id=${taskDTO.id})}" th:object="${taskDTO}" method="post" novalidate>
+                <div class="row g-3">
+                    <div class="col-12"><label for="title" class="form-label">Task</label>
+                        <input type="text" id="title" th:field="*{title}" class="form-control" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" placeholder="Spray maize in plot A"><div class="invalid-feedback" th:errors="*{title}"></div></div>
+                    <div class="col-12"><label for="description" class="form-label">Details <span class="text-secondary fw-normal">(optional)</span></label>
+                        <textarea id="description" th:field="*{description}" rows="3" class="form-control"></textarea></div>
+                    <div class="col-sm-6"><label for="dueDate" class="form-label">Due date</label>
+                        <input type="date" id="dueDate" th:field="*{dueDate}" class="form-control" th:classappend="${#fields.hasErrors('dueDate')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{dueDate}"></div></div>
+                    <div class="col-sm-6"><label for="status" class="form-label">Status</label>
+                        <select id="status" th:field="*{status}" class="form-select"><option value="Pending">Pending</option><option value="Done">Done</option></select></div>
+                </div>
+                <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-tf" th:text="${taskDTO.id == null} ? 'Add task' : 'Save changes'">Save</button><a th:href="@{/tasks}" class="btn btn-outline-tf">Cancel</a></div>
+            </form>
+        </div></div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

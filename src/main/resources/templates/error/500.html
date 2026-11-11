@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Something went wrong')}"></head>
+<body class="d-flex align-items-center justify-content-center min-vh-100 text-center">
+<div class="p-4">
+    <div class="tf-temp text-success">500</div>
+    <h1 class="h3 mt-2">Something went wrong</h1>
+    <p class="text-secondary">The server hit a problem. Try again, or come back in a few minutes.</p>
+    <a th:href="@{/dashboard}" class="btn btn-tf">Back to dashboard</a>
+</div>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

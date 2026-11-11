@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Farm record')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('records')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar(${recordDTO.id == null} ? 'Add record' : 'Edit record')}"></div>
+    <div class="tf-content">
+        <!-- ASSUMED: model attribute "recordDTO" (FarmRecordDTO: id, recordDate, category, description, amount) -->
+        <div class="tf-panel" style="max-width:42rem"><div class="tf-panel-body">
+            <form th:action="${recordDTO.id == null} ? @{/records} : @{/records/{id}(id=${recordDTO.id})}" th:object="${recordDTO}" method="post" novalidate>
+                <div class="row g-3">
+                    <div class="col-sm-6"><label for="recordDate" class="form-label">Date</label>
+                        <input type="date" id="recordDate" th:field="*{recordDate}" class="form-control" th:classappend="${#fields.hasErrors('recordDate')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{recordDate}"></div></div>
+                    <div class="col-sm-6"><label for="category" class="form-label">Category</label>
+                        <select id="category" th:field="*{category}" class="form-select" th:classappend="${#fields.hasErrors('category')} ? 'is-invalid'">
+                            <option value="">Choose a category</option>
+                            <option th:each="c : ${ {'Expense','Income','Yield','Field work','Pest and disease'} }" th:value="${c}" th:text="${c}">Expense</option>
+                        </select><div class="invalid-feedback" th:errors="*{category}"></div></div>
+                    <div class="col-12"><label for="description" class="form-label">Description</label>
+                        <textarea id="description" th:field="*{description}" rows="3" class="form-control" th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"></textarea><div class="invalid-feedback" th:errors="*{description}"></div></div>
+                    <div class="col-sm-6"><label for="amount" class="form-label">Amount <span class="text-secondary fw-normal">(optional)</span></label>
+                        <input type="number" step="0.01" id="amount" th:field="*{amount}" class="form-control"></div>
+                </div>
+                <div class="d-flex gap-2 mt-4"><button type="submit" class="btn btn-tf" th:text="${recordDTO.id == null} ? 'Add record' : 'Save changes'">Save</button><a th:href="@{/records}" class="btn btn-outline-tf">Cancel</a></div>
+            </form>
+        </div></div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

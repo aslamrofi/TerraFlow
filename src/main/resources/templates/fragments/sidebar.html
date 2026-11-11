@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<!-- Usage: <div th:replace="~{fragments/sidebar :: sidebar('crops')}"></div>
+     active = dashboard | crops | records | tasks | weather | settings
+     Needs the thymeleaf-extras-springsecurity6 dependency for sec:authentication. -->
+<aside th:fragment="sidebar(active)" id="tfSidebar" class="tf-sidebar offcanvas-lg offcanvas-start d-flex flex-column" tabindex="-1" aria-label="Main navigation">
+    <a class="tf-brand" th:href="@{/dashboard}"><i class="bi bi-flower2"></i>TerraFlow</a>
+    <ul class="tf-nav">
+        <li><a th:href="@{/dashboard}" th:classappend="${active == 'dashboard'} ? 'active'"><i class="bi bi-grid-1x2"></i>Dashboard</a></li>
+        <li><a th:href="@{/crops}" th:classappend="${active == 'crops'} ? 'active'"><i class="bi bi-tree"></i>Crops</a></li>
+        <li><a th:href="@{/records}" th:classappend="${active == 'records'} ? 'active'"><i class="bi bi-journal-text"></i>Farm records</a></li>
+        <li><a th:href="@{/tasks}" th:classappend="${active == 'tasks'} ? 'active'"><i class="bi bi-check2-square"></i>Tasks</a></li>
+        <li><a th:href="@{/weather}" th:classappend="${active == 'weather'} ? 'active'"><i class="bi bi-cloud-sun"></i>Weather</a></li>
+        <li><a th:href="@{/settings}" th:classappend="${active == 'settings'} ? 'active'"><i class="bi bi-sliders"></i>Settings</a></li>
+    </ul>
+    <div class="tf-side-foot">
+        <div class="mb-2 text-truncate"><i class="bi bi-person-circle me-1"></i><span th:text="${currentUsername}">farmer</span></div>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-sm btn-outline-secondary w-100"><i class="bi bi-box-arrow-right me-1"></i>Log out</button>
+        </form>
+    </div>
+</aside>
+
+<!-- Usage: <div th:replace="~{fragments/sidebar :: topbar('Crops')}"></div> -->
+<header th:fragment="topbar(title)" class="tf-topbar">
+    <button class="btn btn-outline-tf d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tfSidebar" aria-controls="tfSidebar" aria-label="Open menu"><i class="bi bi-list"></i></button>
+    <h1 th:text="${title}">Page</h1>
+</header>
+</body>
+</html>

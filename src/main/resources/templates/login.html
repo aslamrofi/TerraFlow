@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Log in')}"></head>
+<body>
+<div class="tf-auth">
+    <section class="tf-auth-art" aria-hidden="true">
+        <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#a8c66c" stroke-opacity=".35" stroke-width="2">
+            <path d="M-20 120 C150 60 300 200 640 110"/><path d="M-20 190 C150 130 300 270 640 180"/>
+            <path d="M-20 260 C150 200 300 340 640 250"/><path d="M-20 330 C150 270 300 410 640 320"/>
+            <path d="M-20 400 C150 340 300 480 640 390"/><path d="M-20 470 C150 410 300 550 640 460"/>
+            <path d="M-20 540 C150 480 300 620 640 530"/><path d="M-20 610 C150 550 300 690 640 600"/>
+        </svg>
+        <h2>Know every row you planted.</h2>
+        <p>Track crops, tasks and the weather in one place.</p>
+    </section>
+    <section class="tf-auth-form">
+        <div class="tf-auth-card">
+            <h1 class="h3 mb-1">Log in to TerraFlow</h1>
+            <p class="text-secondary mb-4">Enter your username to continue.</p>
+
+            <div th:if="${param.error != null}" class="alert alert-danger" role="alert">Enter a username to continue.</div>
+            <div th:if="${param.logout != null}" class="alert alert-success" role="status">You are logged out.</div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-4">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" autocomplete="username" required autofocus>
+                </div>
+                <button type="submit" class="btn btn-tf w-100 py-2">Continue</button>
+            </form>
+            <p class="mt-4 mb-0 text-secondary small">New here? Just enter a username and your account is created automatically.</p>
+        </div>
+    </section>
+</div>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

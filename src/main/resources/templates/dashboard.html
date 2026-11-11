@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Dashboard')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('dashboard')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar('Dashboard')}"></div>
+    <div class="tf-content">
+        <!-- ASSUMED model attributes: cropCount, recordCount, pendingTaskCount, upcomingTasks (title, dueDate, status), recentCrops (CropDTO list), weather (WeatherDTO) -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-xl-3"><div class="tf-panel tf-stat"><div class="n" th:text="${cropCount} ?: 0">0</div><div class="l">Crops growing</div></div></div>
+            <div class="col-sm-6 col-xl-3"><div class="tf-panel tf-stat straw"><div class="n" th:text="${pendingTaskCount} ?: 0">0</div><div class="l">Tasks to do</div></div></div>
+            <div class="col-sm-6 col-xl-3"><div class="tf-panel tf-stat soil"><div class="n" th:text="${recordCount} ?: 0">0</div><div class="l">Farm records</div></div></div>
+            <div class="col-sm-6 col-xl-3"><div class="tf-panel tf-stat"><div class="n"><span th:text="${weather?.temperature} ?: '-'">-</span><small class="fs-6">&deg;</small></div><div class="l" th:text="${weather?.condition} ?: 'Weather unavailable'">Weather</div></div></div>
+        </div>
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="tf-panel h-100">
+                    <div class="tf-panel-head"><h2>Upcoming tasks</h2><a th:href="@{/tasks}" class="btn btn-sm btn-outline-tf">All tasks</a></div>
+                    <div th:if="${#lists.isEmpty(upcomingTasks)}" class="tf-empty">Nothing due soon. <a th:href="@{/tasks/new}">Add a task</a></div>
+                    <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(upcomingTasks)}">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3" th:each="t : ${upcomingTasks}">
+                            <span><span class="fw-semibold" th:text="${t.title}">Water plot A</span><br><small class="text-secondary" th:text="'Due ' + ${#temporals.format(t.dueDate, 'dd MMM')}">Due 12 Nov</small></span>
+                            <span class="tf-stage st-pending" th:text="${t.status}">Pending</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="tf-panel h-100">
+                    <div class="tf-panel-head"><h2>Recent crops</h2><a th:href="@{/crops/new}" class="btn btn-sm btn-tf">Register crop</a></div>
+                    <div th:if="${#lists.isEmpty(recentCrops)}" class="tf-empty">No crops yet.</div>
+                    <ul class="list-group list-group-flush" th:unless="${#lists.isEmpty(recentCrops)}">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3" th:each="c : ${recentCrops}">
+                            <a th:href="@{/crops/{id}(id=${c.id})}" class="fw-semibold text-decoration-none" th:text="${c.name}">Maize</a>
+                            <span class="tf-stage" th:classappend="${'stage-' + #strings.toLowerCase(#strings.replace(c.growthStage, ' ', '-'))}" th:text="${c.growthStage}">Seedling</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

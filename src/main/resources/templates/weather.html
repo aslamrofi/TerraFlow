@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Weather')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('weather')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar('Weather')}"></div>
+    <div class="tf-content" id="tfWeather" th:attr="data-url=@{/weather},data-needs=${needsLocation}">
+
+        <div class="d-flex justify-content-end mb-3">
+            <button type="button" id="geoRefresh" class="btn btn-outline-tf btn-sm">
+                <i class="bi bi-crosshair me-1"></i>Update my location
+            </button>
+        </div>
+
+        <!-- status / permission messages, controlled by the script below -->
+        <div id="geoAlert" class="alert d-none" role="status">
+            <div id="geoSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></div>
+            <span id="geoMsg"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
+
+        <p th:if="${needsLocation and weather != null}" class="text-secondary small">
+            Showing the last saved reading until your location is available.
+        </p>
+
+        <div th:if="${weather == null and !needsLocation and error == null}" class="tf-panel tf-empty">
+            <i class="bi bi-cloud-slash"></i><p class="mt-2 mb-0">Weather data is not available right now.</p>
+        </div>
+
+        <div th:if="${weather != null}" class="row g-3">
+            <div class="col-lg-5">
+                <div class="tf-panel tf-panel-body h-100">
+                    <p class="text-secondary mb-1"><i class="bi bi-geo-alt me-1"></i><span th:text="${weather.location}">Petaling Jaya, Selangor</span></p>
+                    <div class="d-flex align-items-center gap-3">
+                        <i th:if="${weather.icon != null}" class="bi fs-1" th:classappend="${weather.icon}"></i>
+                        <div class="tf-temp" th:text="${weather.temperature} + '&deg;'">24&deg;</div>
+                    </div>
+                    <p class="fs-5 mt-2" th:text="${weather.condition}">Partly cloudy</p>
+                    <dl class="tf-dl mt-3" style="grid-template-columns:8rem 1fr">
+                        <dt>Humidity</dt><dd th:text="${weather.humidity} + '%'">60%</dd>
+                        <dt>Wind</dt><dd th:text="${weather.windSpeed} + ' km/h'">10 km/h</dd>
+                        <dt>Rainfall</dt><dd th:text="${weather.rainfall} + ' mm'">0 mm</dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="tf-panel h-100">
+                    <div class="tf-panel-head"><h2>Forecast</h2></div>
+                    <div th:if="${#lists.isEmpty(weather.forecast)}" class="tf-empty">No forecast available.</div>
+                    <div class="table-responsive" th:unless="${#lists.isEmpty(weather.forecast)}">
+                        <table class="table tf-table">
+                            <thead><tr><th>Day</th><th>Conditions</th><th>Low</th><th>High</th></tr></thead>
+                            <tbody>
+                            <tr th:each="f : ${weather.forecast}">
+                                <td th:text="${#temporals.format(f.date, 'EEE dd MMM')}">Mon 10 Nov</td>
+                                <td><i class="bi me-1" th:classappend="${f.icon}"></i><span th:text="${f.condition}">Sunny</span></td>
+                                <td th:text="${f.minTemp} + '&deg;'">15&deg;</td>
+                                <td th:text="${f.maxTemp} + '&deg;'">27&deg;</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<script>
+    (function () {
+        var root = document.getElementById('tfWeather');
+        var alertBox = document.getElementById('geoAlert');
+        var spinner = document.getElementById('geoSpinner');
+        var msg = document.getElementById('geoMsg');
+        var btn = document.getElementById('geoRefresh');
+        var baseUrl = root.getAttribute('data-url');
+
+        function show(text, kind, busy) {
+            alertBox.className = 'alert alert-' + kind + ' d-flex align-items-center gap-2';
+            spinner.classList.toggle('d-none', !busy);
+            msg.textContent = text;
+        }
+
+        // District + city from the browser (free, no key). Returns null on any failure;
+        // the server then falls back to its own lookup.
+        function placeName(lat, lon) {
+            var ctl = new AbortController();
+            var timer = setTimeout(function () { ctl.abort(); }, 3000);
+            return fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + lat
+                + '&longitude=' + lon + '&localityLanguage=en', { signal: ctl.signal })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (d) {
+                    clearTimeout(timer);
+                    if (!d) { return null; }
+                    var parts = [];
+                    [d.locality, d.city].forEach(function (p) {
+                        if (p && parts.indexOf(p) === -1) { parts.push(p); }
+                    });
+                    if (!parts.length && d.principalSubdivision) { parts.push(d.principalSubdivision); }
+                    return parts.join(', ') || null;
+                })
+                .catch(function () { clearTimeout(timer); return null; });
+        }
+
+        function locate() {
+            if (!window.isSecureContext) {
+                show('Location only works over HTTPS (or on localhost).', 'warning', false);
+                return;
+            }
+            if (!navigator.geolocation) {
+                show('This browser does not support location.', 'warning', false);
+                return;
+            }
+            btn.disabled = true;
+            show('Getting your location...', 'info', true);
+            navigator.geolocation.getCurrentPosition(
+                function (pos) {
+                    var lat = pos.coords.latitude.toFixed(4);
+                    var lon = pos.coords.longitude.toFixed(4);
+                    show('Finding your place name...', 'info', true);
+                    placeName(lat, lon).then(function (place) {
+                        var url = baseUrl + '?lat=' + lat + '&lon=' + lon;
+                        if (place) { url += '&place=' + encodeURIComponent(place); }
+                        window.location.replace(url);
+                    });
+                },
+                function (err) {
+                    btn.disabled = false;
+                    var texts = {
+                        1: 'Location permission was denied. Allow location for this site in your browser settings, then press "Update my location".',
+                        2: 'Your device could not determine its location. Please try again.',
+                        3: 'Getting your location took too long. Please try again.'
+                    };
+                    show(texts[err.code] || 'Could not get your location.', 'warning', false);
+                },
+                { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+            );
+        }
+
+        btn.addEventListener('click', locate);
+        if (root.getAttribute('data-needs') === 'true') {
+            locate();
+        }
+    })();
+</script>
+</body>
+</html>

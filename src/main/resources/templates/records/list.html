@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Farm records')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('records')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar('Farm records')}"></div>
+    <div class="tf-content">
+        <!-- ASSUMED: records (FarmRecordDTO: id, recordDate, category, description, amount). Routes: /records, /records/new, /records/{id}/edit, /records/{id}/delete -->
+        <div th:if="${param.created != null}" class="alert alert-success" role="status">Record added.</div>
+        <div th:if="${param.deleted != null}" class="alert alert-success" role="status">Record deleted.</div>
+        <div class="tf-panel">
+            <div class="tf-panel-head"><h2>Records</h2><a th:href="@{/records/new}" class="btn btn-tf btn-sm"><i class="bi bi-plus-lg me-1"></i>Add record</a></div>
+            <div th:if="${#lists.isEmpty(records)}" class="tf-empty"><i class="bi bi-journal-text"></i><p class="mt-2 mb-3">No records yet. Log expenses, yields and field work here.</p><a th:href="@{/records/new}" class="btn btn-tf">Add your first record</a></div>
+            <div class="table-responsive" th:unless="${#lists.isEmpty(records)}">
+                <table class="table tf-table">
+                    <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th class="text-end">Actions</th></tr></thead>
+                    <tbody>
+                    <tr th:each="r : ${records}">
+                        <td th:text="${#temporals.format(r.recordDate, 'dd MMM yyyy')}">01 Nov 2026</td>
+                        <td th:text="${r.category}">Expense</td>
+                        <td th:text="${r.description}">Fertiliser</td>
+                        <td th:text="${r.amount} ?: '-'">0</td>
+                        <td class="text-end text-nowrap">
+                            <a th:href="@{/records/{id}/edit(id=${r.id})}" class="btn btn-sm btn-outline-tf" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <form th:action="@{/records/{id}/delete(id=${r.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this record?')"><button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button></form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

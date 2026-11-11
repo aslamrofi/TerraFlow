@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Create account')}"></head>
+<body>
+<div class="tf-auth">
+    <section class="tf-auth-art" aria-hidden="true">
+        <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#a8c66c" stroke-opacity=".35" stroke-width="2">
+            <path d="M-20 120 C150 60 300 200 640 110"/><path d="M-20 190 C150 130 300 270 640 180"/>
+            <path d="M-20 260 C150 200 300 340 640 250"/><path d="M-20 330 C150 270 300 410 640 320"/>
+            <path d="M-20 400 C150 340 300 480 640 390"/><path d="M-20 470 C150 410 300 550 640 460"/>
+            <path d="M-20 540 C150 480 300 620 640 530"/><path d="M-20 610 C150 550 300 690 640 600"/>
+        </svg>
+        <h2>Start your farm notebook.</h2>
+        <p>Register your crops and plan the season ahead.</p>
+    </section>
+    <section class="tf-auth-form">
+        <div class="tf-auth-card">
+            <h1 class="h3 mb-1">Create your account</h1>
+            <p class="text-secondary mb-4">It takes under a minute.</p>
+
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+            <form th:action="@{/register}" th:object="${userDTO}" method="post" novalidate>
+                <div class="mb-3">
+                    <label for="fullName" class="form-label">Full name</label>
+                    <input type="text" id="fullName" th:field="*{fullName}" class="form-control" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'" autocomplete="name">
+                    <div class="invalid-feedback" th:errors="*{fullName}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" autocomplete="email">
+                    <div class="invalid-feedback" th:errors="*{email}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'" autocomplete="username">
+                    <div class="invalid-feedback" th:errors="*{username}"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'" autocomplete="new-password">
+                    <div class="form-text" th:unless="${#fields.hasErrors('password')}">Use at least 6 characters.</div>
+                    <div class="invalid-feedback" th:errors="*{password}"></div>
+                </div>
+                <button type="submit" class="btn btn-tf w-100 py-2">Create account</button>
+            </form>
+            <p class="mt-4 mb-0 text-secondary">Already registered? <a th:href="@{/login}">Log in</a></p>
+        </div>
+    </section>
+</div>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

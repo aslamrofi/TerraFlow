@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Tasks')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('tasks')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar('Tasks')}"></div>
+    <div class="tf-content">
+        <!-- ASSUMED: tasks (FarmTaskDTO: id, title, description, dueDate, status = Pending|Done|Overdue). Routes: /tasks, /tasks/new, /tasks/{id}/edit, /tasks/{id}/delete -->
+        <div th:if="${param.created != null}" class="alert alert-success" role="status">Task added.</div>
+        <div th:if="${param.deleted != null}" class="alert alert-success" role="status">Task deleted.</div>
+        <div class="tf-panel">
+            <div class="tf-panel-head"><h2>Farm tasks</h2><a th:href="@{/tasks/new}" class="btn btn-tf btn-sm"><i class="bi bi-plus-lg me-1"></i>Add task</a></div>
+            <div th:if="${#lists.isEmpty(tasks)}" class="tf-empty"><i class="bi bi-check2-square"></i><p class="mt-2 mb-3">No tasks yet. Plan watering, spraying and harvest work here.</p><a th:href="@{/tasks/new}" class="btn btn-tf">Add your first task</a></div>
+            <div class="table-responsive" th:unless="${#lists.isEmpty(tasks)}">
+                <table class="table tf-table">
+                    <thead><tr><th>Task</th><th>Due</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                    <tbody>
+                    <tr th:each="t : ${tasks}">
+                        <td><span class="fw-semibold" th:text="${t.title}">Water plot A</span><br><small class="text-secondary" th:text="${t.description}">Details</small></td>
+                        <td th:text="${#temporals.format(t.dueDate, 'dd MMM yyyy')}">12 Nov 2026</td>
+                        <td><span class="tf-stage" th:classappend="${'st-' + #strings.toLowerCase(t.status)}" th:text="${t.status}">Pending</span></td>
+                        <td class="text-end text-nowrap">
+                            <a th:href="@{/tasks/{id}/edit(id=${t.id})}" class="btn btn-sm btn-outline-tf" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <form th:action="@{/tasks/{id}/delete(id=${t.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this task?')"><button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button></form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

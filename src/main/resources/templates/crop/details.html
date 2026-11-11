@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Crop details')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('crops')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar(${crop.name})}"></div>
+    <div class="tf-content">
+        <div th:if="${param.updated != null}" class="alert alert-success" role="status">Changes saved.</div>
+        <div class="tf-panel" style="max-width:42rem">
+            <div class="tf-panel-head">
+                <h2>Crop details</h2>
+                <span class="tf-stage" th:classappend="${'stage-' + #strings.toLowerCase(#strings.replace(crop.growthStage, ' ', '-'))}" th:text="${crop.growthStage}">Seedling</span>
+            </div>
+            <div class="tf-panel-body">
+                <dl class="tf-dl">
+                    <dt>Crop name</dt><dd th:text="${crop.name}">Maize</dd>
+                    <dt>Variety</dt><dd th:text="${crop.variety}">Hybrid</dd>
+                    <dt>Planting date</dt><dd th:text="${#temporals.format(crop.plantingDate, 'dd MMMM yyyy')}">01 January 2026</dd>
+                    <dt>Plot location</dt><dd th:text="${crop.plotLocation} ?: 'Not set'">North field</dd>
+                    <dt>Notes</dt><dd th:text="${crop.notes} ?: 'No notes'" style="white-space:pre-line">Notes</dd>
+                </dl>
+            </div>
+            <div class="tf-panel-head border-top border-bottom-0">
+                <a th:href="@{/crops}" class="btn btn-outline-tf">Back to crops</a>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/crops/{id}/edit(id=${crop.id})}" class="btn btn-tf"><i class="bi bi-pencil me-1"></i>Edit</a>
+                    <form th:action="@{/crops/{id}/delete(id=${crop.id})}" method="post" onsubmit="return confirm('Delete this crop? This cannot be undone.')">
+                        <button type="submit" class="btn btn-outline-danger"><i class="bi bi-trash me-1"></i>Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

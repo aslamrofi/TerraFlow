@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Crops')}"></head>
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar('crops')}"></div>
+<main class="tf-main">
+    <div th:replace="~{fragments/sidebar :: topbar('Crops')}"></div>
+    <div class="tf-content">
+        <div th:if="${param.created != null}" class="alert alert-success" role="status">Crop registered.</div>
+        <div th:if="${param.deleted != null}" class="alert alert-success" role="status">Crop deleted.</div>
+
+        <div class="tf-panel">
+            <div class="tf-panel-head">
+                <h2>Registered crops</h2>
+                <a th:href="@{/crops/new}" class="btn btn-tf btn-sm"><i class="bi bi-plus-lg me-1"></i>Register crop</a>
+            </div>
+            <div th:if="${#lists.isEmpty(crops)}" class="tf-empty">
+                <i class="bi bi-tree"></i>
+                <p class="mt-2 mb-3">You have not registered any crops yet.</p>
+                <a th:href="@{/crops/new}" class="btn btn-tf">Register your first crop</a>
+            </div>
+            <div th:unless="${#lists.isEmpty(crops)}" class="table-responsive">
+                <table class="table tf-table">
+                    <thead><tr><th>Crop</th><th>Variety</th><th>Planted</th><th>Growth stage</th><th class="text-end">Actions</th></tr></thead>
+                    <tbody>
+                    <tr th:each="c : ${crops}">
+                        <td class="fw-semibold"><a th:href="@{/crops/{id}(id=${c.id})}" th:text="${c.name}" class="text-decoration-none">Maize</a></td>
+                        <td th:text="${c.variety}">Hybrid</td>
+                        <td th:text="${#temporals.format(c.plantingDate, 'dd MMM yyyy')}">01 Jan 2026</td>
+                        <td><span class="tf-stage" th:classappend="${'stage-' + #strings.toLowerCase(#strings.replace(c.growthStage, ' ', '-'))}" th:text="${c.growthStage}">Seedling</span></td>
+                        <td class="text-end text-nowrap">
+                            <a th:href="@{/crops/{id}(id=${c.id})}" class="btn btn-sm btn-outline-tf" title="View"><i class="bi bi-eye"></i></a>
+                            <a th:href="@{/crops/{id}/edit(id=${c.id})}" class="btn btn-sm btn-outline-tf" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <form th:action="@{/crops/{id}/delete(id=${c.id})}" method="post" class="d-inline" onsubmit="return confirm('Delete this crop? This cannot be undone.')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>
